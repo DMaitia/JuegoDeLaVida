@@ -21,7 +21,7 @@ typedef struct matriz {
 void matrizConstructor(matriz_t *matrizStruct, int ancho, int largo) {
   matrizStruct->ancho = ancho;
   matrizStruct->largo = largo;
-  matrizStruct->matriz = malloc(sizeof(char) * (ancho * largo));
+  matrizStruct->matriz = malloc(sizeof(unsigned char) * (ancho * largo));
   memset(matrizStruct->matriz, 0, ancho * largo);
 }
 
@@ -55,17 +55,14 @@ void cargarMatriz(matriz_t *matrizStruct, char *archivo) {
   int fila, columna;
 
   FILE *fp = fopen(archivo, "rb");
-  // de donde sale fila y columna?
-  // FORMATO DE SCANF
-  // int fscanf ( FILE * stream, const char * format,char* destin);
-  while (fscanf(fp, "%d %d", &fila, &columna) != 0 &&
-         !fin) {  // No estoy seguro si lee bien, chekear
+  while (fscanf(fp, "%d %d", &fila, &columna) != EOF && !fin) {
     if (!datosValidos(matrizStruct, fila, columna)) {
       fprintf(stderr, "Error de coordenadas.");
       fin = true;
     } else {
-      // recibe ancho y largo o largo y ancho
-      setCelda(matrizStruct, matrizStruct->ancho, matrizStruct->largo, true);
+      setCelda(matrizStruct, fila, columna, true);
+      // printf("%d ", fila);
+      // printf("%d\n", columna);
     }
   }
   fclose(fp);
@@ -103,6 +100,27 @@ unsigned int vecinos(unsigned char *a, unsigned int i, unsigned int j,
   return vecinos;
 }
 
+void mostrarMatriz(matriz_t *matrizStruct) {
+  for (int i = 0; i < matrizStruct->ancho; i++) {
+    for (int j = 0; j < matrizStruct->largo; j++) {
+      printf("%d ", getCelda(matrizStruct, i, j));
+    }
+    printf("\n");
+  }
+}
+
+int main() {
+  char archivo[100] = "/home/darius/workspace2/TPOrga/src/glider";
+  matriz_t matriz;
+  matrizConstructor(&matriz, 10, 10);
+  cargarMatriz(&matriz, archivo);
+  mostrarMatriz(&matriz);
+  int v = vecinos(matriz.matriz, 4, 4, matriz.ancho, matriz.largo);
+  printf("Vecinos : %d", v);
+  matrizDestructor(&matriz);
+  return 0;
+}
+/*
 int main(int argc, char *argv[]) {
 
   matriz_t *matriz;
@@ -121,4 +139,4 @@ int main(int argc, char *argv[]) {
 
   matrizDestructor(matriz);
   return 0;
-}
+}*/
