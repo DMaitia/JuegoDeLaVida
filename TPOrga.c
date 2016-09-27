@@ -49,16 +49,17 @@ bool datosValidos(t_matriz *matriz, int fila, int columna) {
   else
     return true;
 }
-
+/*
 // cargarMatriz
 // carga la matriz a partir del archivo
-void cargarMatriz(t_matriz *matriz, string archivo) {
+void cargarMatriz(t_matriz *matriz, char *archivo) {
   bool fin;
+  memset(matriz->matriz, 0, matriz->ancho * matriz->largo);
 
   FILE *fp = fopen(archivo, "rb");
   fin = false;
-  while (fscanf(fp, "%d %d", fila, columna) != 0 &&
-         !fin) {  // No estoy seguro si lee bien, chekear
+  while (fscanf(fp, "%d %d", fila, columna) != 0 && !fin) {
+    // No estoy seguro si lee bien, chekear
 
     if (!datosValidos(matriz, fila, columna)) {
       fputs(stderr, "Error de coordenadas.");
@@ -68,7 +69,7 @@ void cargarMatriz(t_matriz *matriz, string archivo) {
     }
   }
   fclose(fp);
-}
+}*/
 
 /* a : puntero a la posicion (0,0) de la matriz
  * i : columna
@@ -79,38 +80,73 @@ void cargarMatriz(t_matriz *matriz, string archivo) {
 unsigned int vecinos(unsigned char *a, unsigned int i, unsigned int j,
                      unsigned int M, unsigned int N) {
 
-  vecinos = 0;
-  for (int x = i - 1; x <= i + 1; x++) {
-    for (int y = j - 1; y <= j + 1; y++) {
-      if (y == -1) y = M - 1;
-      if (y == M) y = 0;
-      if (x == -1) x = N - 1;
-      if (x == N) x = 0;
+  int finH, finV, inicioH, inicioV, vecinos;
 
-      vecinos += a[x + y * N];
+  inicioV = i - 1;
+  if (inicioV < 0) inicioV = 0;
+
+  inicioH = j - 1;
+  if (inicioH < 0) inicioH = 0;
+
+  finV = i + 1;
+  if (finV > N - 1) finV = N - 1;
+
+  finH = j + 1;
+  if (finH > M - 1) finH = M - 1;
+
+  vecinos = 0;
+  for (int x = inicioH; x <= finH; x++) {
+    for (int y = inicioV; y <= finV; y++) {
+      if (!(x == j && y == i)) vecinos += a[x + N * y];
     }
   }
+  return vecinos;
 }
+/*
 void juego(int *argv) {
 
   t_matriz matriz;
   int iteraciones;
-  string archivo;
+  char archivo[50];
 
   iteraciones = argv[1];
   archivo = argv[4];
 
   matrizConstructor(&matriz, argv[2], argv[3]);
 
-  cargarMatriz(&matriz, archivo);
+  cargarMatriz(&matriz, &archivo);
   for (int i = 0; i < iteraciones; i++) {
     // vecinos
   }
 
   matrizDestructor(&matriz);
+}*/
+///////////////////////////////////////////TESTS////////////////
+
+void vecinosTests() {
+  unsigned char *matriz = malloc(sizeof(unsigned char) * 10);
+  matriz[0] = 1;
+  matriz[1] = 0;
+  matriz[2] = 1;
+  matriz[3] = 0;
+  matriz[4] = 1;
+  matriz[5] = 0;
+  matriz[6] = 1;
+  matriz[7] = 0;
+  matriz[8] = 1;
+
+  unsigned int M = 3;
+  unsigned int N = 3;
+  unsigned int resultado = vecinos(matriz, 1, 1, M, N);
+  printf("Vecinos: %d", resultado);
+  resultado = vecinos(matriz, 1, 2, M, N);
+  printf("Vecinos: %d", resultado);
+
+  free(matriz);
 }
 
+////////////////////////////////////////////////////////////////
 int main(void) {
-  puts("!!!Hello World!!!"); /* prints !!!Hello World!!! */
+  vecinosTests();
   return EXIT_SUCCESS;
 }
