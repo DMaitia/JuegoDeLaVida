@@ -70,6 +70,27 @@ void cargarMatriz(t_matriz *matriz, string archivo) {
   fclose(fp);
 }
 
+/* a : puntero a la posicion (0,0) de la matriz
+ * i : columna
+ * j : fila
+ * M : cantidad de filas
+ * N : cantidad de columnas
+ */
+unsigned int vecinos(unsigned char *a, unsigned int i, unsigned int j,
+                     unsigned int M, unsigned int N) {
+
+  vecinos = 0;
+  for (int x = i - 1; x <= i + 1; x++) {
+    for (int y = j - 1; y <= j + 1; y++) {
+      if (y == -1) y = M - 1;
+      if (y == M) y = 0;
+      if (x == -1) x = N - 1;
+      if (x == N) x = 0;
+
+      vecinos += a[x + y * N];
+    }
+  }
+}
 void juego(int *argv) {
 
   t_matriz matriz;
