@@ -2,15 +2,13 @@
  ============================================================================
 
  Name        : TPOrga.c
- Author      :
- Version     :
- Copyright   : Your copyright notice
- Description : Programa que simulo el "juego de la vida"
+ Autores     : Darius Maitia, Cristian González
+ Description : Programa que simula el "juego de la vida"
  ============================================================================
  */
 
 #include <stdio.h>
-#include <stdlib.h>
+#include <stdlib.h> //atoi()
 #include <stdbool.h>
 #include <string.h> //memset()
 
@@ -54,12 +52,13 @@ bool datosValidos(matriz_t *matrizStruct, int fila, int columna) {
 // carga la matriz a partir del archivo
 void cargarMatriz(matriz_t *matrizStruct, char* archivo) {
   bool fin = false;
+  int fila,columna;
 
   FILE *fp = fopen(archivo, "rb");
   //de donde sale fila y columna?
   //FORMATO DE SCANF
   //int fscanf ( FILE * stream, const char * format,char* destin);
-  while (fscanf(fp, "%d %d", fila, columna) != 0 && !fin) {  // No estoy seguro si lee bien, chekear
+  while (fscanf(fp, "%d %d", &fila, &columna) != 0 && !fin) {  // No estoy seguro si lee bien, chekear
     if (!datosValidos(matrizStruct, fila, columna)) {
       fprintf(stderr,"Error de coordenadas.");
       fin = true;
@@ -93,26 +92,22 @@ unsigned int vecinos(unsigned char *a, unsigned int i, unsigned int j,
   }
 }
 
-void juego(int *argv) {
+int main(int argc, char *argv[]) {
 
-  matriz_t matriz;
-  int iteraciones;
-  char* archivo;
+  matriz_t* matriz;
 
-  iteraciones = argv[1];
-  archivo = argv[4];
+  int iteraciones = atoi(argv[1]); //convert char* to int
+  int largo = atoi(argv[3]);
+  int ancho = atoi(argv[2]);
+  //crear matriz
+  matrizConstructor(matriz, ancho, largo);
 
-  matrizConstructor(&matriz, argv[2], argv[3]);
-
-  cargarMatriz(&matriz, archivo);
+  //se carga con los datos del archivo
+  cargarMatriz(matriz, argv[4]);
   for (int i = 0; i < iteraciones; i++) {
     // vecinos
   }
 
-  matrizDestructor(&matriz);
-}
-
-int main(void) {
-  puts("!!!Hello World!!!"); /* prints !!!Hello World!!! */
-  return EXIT_SUCCESS;
+  matrizDestructor(matriz);
+  return 0;
 }
