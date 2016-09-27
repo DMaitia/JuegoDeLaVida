@@ -48,6 +48,21 @@ bool datosValidos(matriz_t *matrizStruct, int fila, int columna) {
     return true;
 }
 
+int cargarEstado(matriz_t* matriz, int estado){
+  int filas = matriz->largo;
+  int columnas = matriz->ancho;
+  char* nombre_archivo[20];
+  snprintf(nombre_archivo,20,"estado_%d.pbm",estado);
+  printf("Grabando %s\n",nombre_archivo);
+  FILE* fp = fopen(nombre_archivo,"w");
+  for (int i = 0; i < filas; i++) {
+    for (int j = 0; j < columnas; j++) {
+      /* code */
+    }
+  }
+}
+
+
 // cargarMatriz
 // carga la matriz a partir del archivo
 void cargarMatriz(matriz_t *matrizStruct, char *archivo) {
