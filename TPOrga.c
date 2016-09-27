@@ -2,74 +2,74 @@
  ============================================================================
 
  Name        : TPOrga.c
- Author      :
- Version     :
- Copyright   : Your copyright notice
- Description : Hello World in C, Ansi-style
+ Autores     : Darius Maitia, Cristian González
+ Description : Programa que simula el "juego de la vida"
  ============================================================================
  */
 
 #include <stdio.h>
-#include <stdlib.h>
+#include <stdlib.h>  //atoi()
 #include <stdbool.h>
-#include <string.h>
+#include <string.h>  //memset()
 
 typedef struct matriz {
   int ancho;
   int largo;
   char *matriz;
-} t_matriz;
+} matriz_t;
 
-void matrizConstructor(t_matriz *matriz, int ancho, int largo) {
-  matriz->ancho = ancho;
-  matriz->largo = largo;
-  matriz->matriz = malloc(sizeof(char) * (ancho * largo));
-  memset(matriz->matriz, 0, ancho * largo);
+void matrizConstructor(matriz_t *matrizStruct, int ancho, int largo) {
+  matrizStruct->ancho = ancho;
+  matrizStruct->largo = largo;
+  matrizStruct->matriz = malloc(sizeof(char) * (ancho * largo));
+  memset(matrizStruct->matriz, 0, ancho * largo);
 }
 
-void matrizDestructor(t_matriz *matriz) {
-  free(matriz->matriz);
-  matriz->matriz = NULL;
+void matrizDestructor(matriz_t *matrizStruct) {
+  free(matrizStruct->matriz);
+  matrizStruct->matriz = NULL;
 }
 
-void setCelda(t_matriz *matriz, int fila, int columna, bool valor) {
-  matriz->matriz[columna + fila * matriz->ancho] = valor;
+void setCelda(matriz_t *matrizStruct, int fila, int columna, bool valor) {
+  matrizStruct->matriz[columna + fila * matrizStruct->ancho] = valor;
 }
 
-bool getCelda(t_matriz *matriz, int fila, int columna) {
-  return matriz->matriz[columna + fila * matriz->ancho];
+bool getCelda(matriz_t *matrizStruct, int fila, int columna) {
+  return matrizStruct->matriz[columna + fila * matrizStruct->ancho];
 }
 
 // datosValidos
 // para validar que la fila y columna pasadas por el archivo no queden fuera de
 // rango
-bool datosValidos(t_matriz *matriz, int fila, int columna) {
-  if ((fila > matriz->largo - 1) || (columna > matriz->ancho - 1))
+bool datosValidos(matriz_t *matrizStruct, int fila, int columna) {
+  if ((fila > matrizStruct->largo - 1) || (columna > matrizStruct->ancho - 1))
     return false;
   else
     return true;
 }
-/*
+
 // cargarMatriz
 // carga la matriz a partir del archivo
-void cargarMatriz(t_matriz *matriz, char *archivo) {
-  bool fin;
-  memset(matriz->matriz, 0, matriz->ancho * matriz->largo);
+void cargarMatriz(matriz_t *matrizStruct, char *archivo) {
+  bool fin = false;
+  int fila, columna;
 
   FILE *fp = fopen(archivo, "rb");
-  fin = false;
-  while (fscanf(fp, "%d %d", fila, columna) != 0 && !fin) {
-    // No estoy seguro si lee bien, chekear
-
-    if (!datosValidos(matriz, fila, columna)) {
-      fputs(stderr, "Error de coordenadas.");
+  // de donde sale fila y columna?
+  // FORMATO DE SCANF
+  // int fscanf ( FILE * stream, const char * format,char* destin);
+  while (fscanf(fp, "%d %d", &fila, &columna) != 0 &&
+         !fin) {  // No estoy seguro si lee bien, chekear
+    if (!datosValidos(matrizStruct, fila, columna)) {
+      fprintf(stderr, "Error de coordenadas.");
       fin = true;
     } else {
-      setCelda(matriz, fila, columna, true);
+      // recibe ancho y largo o largo y ancho
+      setCelda(matrizStruct, matrizStruct->ancho, matrizStruct->largo, true);
     }
   }
   fclose(fp);
-}*/
+}
 
 /* a : puntero a la posicion (0,0) de la matriz
  * i : columna
@@ -102,51 +102,23 @@ unsigned int vecinos(unsigned char *a, unsigned int i, unsigned int j,
   }
   return vecinos;
 }
-/*
-void juego(int *argv) {
 
-  t_matriz matriz;
-  int iteraciones;
-  char archivo[50];
+int main(int argc, char *argv[]) {
 
-  iteraciones = argv[1];
-  archivo = argv[4];
+  matriz_t *matriz;
 
-  matrizConstructor(&matriz, argv[2], argv[3]);
+  int iteraciones = atoi(argv[1]);  // convert char* to int
+  int largo = atoi(argv[3]);
+  int ancho = atoi(argv[2]);
+  // crear matriz
+  matrizConstructor(matriz, ancho, largo);
 
-  cargarMatriz(&matriz, &archivo);
+  // se carga con los datos del archivo
+  cargarMatriz(matriz, argv[4]);
   for (int i = 0; i < iteraciones; i++) {
     // vecinos
   }
 
-  matrizDestructor(&matriz);
-}*/
-///////////////////////////////////////////TESTS////////////////
-
-void vecinosTests() {
-  unsigned char *matriz = malloc(sizeof(unsigned char) * 10);
-  matriz[0] = 1;
-  matriz[1] = 0;
-  matriz[2] = 1;
-  matriz[3] = 0;
-  matriz[4] = 1;
-  matriz[5] = 0;
-  matriz[6] = 1;
-  matriz[7] = 0;
-  matriz[8] = 1;
-
-  unsigned int M = 3;
-  unsigned int N = 3;
-  unsigned int resultado = vecinos(matriz, 1, 1, M, N);
-  printf("Vecinos: %d", resultado);
-  resultado = vecinos(matriz, 1, 2, M, N);
-  printf("Vecinos: %d", resultado);
-
-  free(matriz);
-}
-
-////////////////////////////////////////////////////////////////
-int main(void) {
-  vecinosTests();
-  return EXIT_SUCCESS;
+  matrizDestructor(matriz);
+  return 0;
 }
