@@ -15,7 +15,7 @@
 typedef struct matriz {
   int ancho;
   int largo;
-  char *matriz;
+  char* matriz;
 } matriz_t;
 
 void matrizConstructor(matriz_t *matrizStruct, int ancho, int largo) {
@@ -51,15 +51,19 @@ bool datosValidos(matriz_t *matrizStruct, int fila, int columna) {
 int cargarEstado(matriz_t* matriz, int estado){
   int filas = matriz->largo;
   int columnas = matriz->ancho;
-  char* nombre_archivo[20];
+  char nombre_archivo[20];
   snprintf(nombre_archivo,20,"estado_%d.pbm",estado);
   printf("Grabando %s\n",nombre_archivo);
-  FILE* fp = fopen(nombre_archivo,"w");
+  FILE* fp = fopen(nombre_archivo,"w"); //genero el archivo para escribir
   for (int i = 0; i < filas; i++) {
     for (int j = 0; j < columnas; j++) {
-      /* code */
+      char buffer[2];
+      snprintf(buffer,2,"%d ",getCelda(matriz,i,j));
+      fputs(buffer, fp);
     }
+    fputs("\n",fp);
   }
+  return 0;
 }
 
 
