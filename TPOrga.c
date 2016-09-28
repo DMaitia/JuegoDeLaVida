@@ -15,7 +15,7 @@
 typedef struct matriz {
   int ancho;
   int largo;
-  char* matriz;
+  char *matriz;
 } matriz_t;
 
 void matrizConstructor(matriz_t *matrizStruct, int ancho, int largo) {
@@ -48,24 +48,28 @@ bool datosValidos(matriz_t *matrizStruct, int fila, int columna) {
     return true;
 }
 
-int cargarEstado(matriz_t* matriz, int estado){
+int cargarEstado(matriz_t *matriz, int estado) {
   int filas = matriz->largo;
   int columnas = matriz->ancho;
   char nombre_archivo[20];
-  snprintf(nombre_archivo,20,"estado_%d.pbm",estado);
-  printf("Grabando %s\n",nombre_archivo);
-  FILE* fp = fopen(nombre_archivo,"w"); //genero el archivo para escribir
+  snprintf(nombre_archivo, 20, "estado_%d.pbm", estado);
+  printf("Grabando %s\n", nombre_archivo);
+  char dimensiones[10];
+
+  FILE *fp = fopen(nombre_archivo, "w");  // genero el archivo para escribir
+  snprintf(dimensiones, 10, "P4 %d %d\n", matriz->ancho, matriz->largo);
+  fputs(dimensiones, fp);
   for (int i = 0; i < filas; i++) {
     for (int j = 0; j < columnas; j++) {
-      char buffer[2];
-      snprintf(buffer,2,"%d ",getCelda(matriz,i,j));
+      char buffer[3];
+      snprintf(buffer, 3, "%d ", getCelda(matriz, i, j));
       fputs(buffer, fp);
     }
-    fputs("\n",fp);
+    fputs("\n", fp);
   }
+  printf("Listo");
   return 0;
 }
-
 
 // cargarMatriz
 // carga la matriz a partir del archivo
@@ -135,6 +139,7 @@ int main() {
   cargarMatriz(&matriz, archivo);
   mostrarMatriz(&matriz);
   int v = vecinos(matriz.matriz, 4, 4, matriz.ancho, matriz.largo);
+  cargarEstado(&matriz, 1);
   printf("Vecinos : %d", v);
   matrizDestructor(&matriz);
   return 0;
