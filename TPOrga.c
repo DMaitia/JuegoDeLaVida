@@ -15,7 +15,7 @@
 typedef struct matriz {
   int ancho;
   int largo;
-  char *matriz;
+  unsigned char *matriz;
 } matriz_t;
 
 void matrizConstructor(matriz_t *matrizStruct, int ancho, int largo) {
@@ -30,12 +30,15 @@ void matrizDestructor(matriz_t *matrizStruct) {
   matrizStruct->matriz = NULL;
 }
 
+int posicion(int fila, int columna, int ancho) {
+  return (columna + fila * ancho);
+}
 void setCelda(matriz_t *matrizStruct, int fila, int columna, bool valor) {
-  matrizStruct->matriz[columna + fila * matrizStruct->ancho] = valor;
+  matrizStruct->matriz[posicion(fila, columna, matrizStruct->ancho)] = valor;
 }
 
 bool getCelda(matriz_t *matrizStruct, int fila, int columna) {
-  return matrizStruct->matriz[columna + fila * matrizStruct->ancho];
+  return matrizStruct->matriz[posicion(fila, columna, matrizStruct->ancho)];
 }
 
 // datosValidos
@@ -57,7 +60,7 @@ int cargarEstado(matriz_t *matriz, int estado) {
   char dimensiones[10];
 
   FILE *fp = fopen(nombre_archivo, "w");  // genero el archivo para escribir
-  snprintf(dimensiones, 10, "P4 %d %d\n", matriz->ancho, matriz->largo);
+  snprintf(dimensiones, 10, "P1 %d %d\n", matriz->ancho, matriz->largo);
   fputs(dimensiones, fp);
   for (int i = 0; i < filas; i++) {
     for (int j = 0; j < columnas; j++) {
@@ -84,8 +87,6 @@ void cargarMatriz(matriz_t *matrizStruct, char *archivo) {
       fin = true;
     } else {
       setCelda(matrizStruct, fila, columna, true);
-      // printf("%d ", fila);
-      // printf("%d\n", columna);
     }
   }
   fclose(fp);
@@ -97,70 +98,89 @@ void cargarMatriz(matriz_t *matrizStruct, char *archivo) {
  * M : cantidad de filas
  * N : cantidad de columnas
  */
-unsigned int vecinos(unsigned char *a, unsigned int i, unsigned int j,
-                     unsigned int M, unsigned int N) {
+unsigned int vecinos(unsigned char *a, unsigned int columna, unsigned int fila,
+                     unsigned int cantFilas, unsigned int cantCols) {
 
-  int finH, finV, inicioH, inicioV, vecinos;
+  int columnaFinal, filaFinal, columnaInicial, filaInicial, vecinos;
 
-  inicioV = i - 1;
-  if (inicioV < 0) inicioV = 0;
+  filaInicial = fila - 1;
+  if (filaInicial < 0) filaInicial = 0;
 
-  inicioH = j - 1;
-  if (inicioH < 0) inicioH = 0;
+  columnaInicial = columna - 1;
+  if (columnaInicial < 0) columnaInicial = 0;
 
-  finV = i + 1;
-  if (finV > N - 1) finV = N - 1;
+  filaFinal = fila + 1;
+  if (filaFinal > cantFilas - 1) filaFinal = cantFilas - 1;
 
-  finH = j + 1;
-  if (finH > M - 1) finH = M - 1;
+  columnaFinal = columna + 1;
+  if (columnaFinal > cantCols - 1) columnaFinal = cantCols - 1;
 
   vecinos = 0;
-  for (int x = inicioH; x <= finH; x++) {
-    for (int y = inicioV; y <= finV; y++) {
-      if (!(x == j && y == i)) vecinos += a[x + N * y];
+  for (int y = filaInicial; y <= filaFinal; y++) {
+    for (int x = columnaInicial; x <= columnaFinal; x++) {
+      if (!(x == fila && y == columna)) vecinos += a[x + cantCols * y];
     }
   }
   return vecinos;
 }
 
 void mostrarMatriz(matriz_t *matrizStruct) {
-  for (int i = 0; i < matrizStruct->ancho; i++) {
-    for (int j = 0; j < matrizStruct->largo; j++) {
+  for (int i = 0; i < matrizStruct->largo; i++) {
+    for (int j = 0; j < matrizStruct->ancho; j++) {
       printf("%d ", getCelda(matrizStruct, i, j));
     }
     printf("\n");
   }
 }
+// matriz[columna + fila * matrizStruct->ancho] = valor;
+void actualizarMatriz(matriz_t *matrizStruct) {
+  int v;
+  matriz_t nuevaMatriz;
+  matrizConstructor(&nuevaMatriz, matrizStruct->ancho, matrizStruct->largo);
+  for (int fil = 0; fil < matrizStruct->largo; fil++) {
+    for (int col = 0; col < matrizStruct->ancho; col++) {
+      v = vecinos(matrizStruct->matriz, col, fil, matrizStruct->largo,
+                  matrizStruct->ancho);
+
+      // Si una celda tiene menos de dos o mas de tres vecinos encendidos, su
+      // siguiente estado es apagado.
+      if (v < 2 || v > 3) {
+        setCelda(&nuevaMatriz, fil, col, 0);
+      }
+      // Si una celda encendida tiene dos o tres vecinos encendidos, su
+      // siguiente
+      // estado es encendido.
+      if (getCelda(matrizStruct, fil, col) && (v == 3 || v == 2)) {
+        setCelda(&nuevaMatriz, fil, col, 1);
+      }
+      // Si una celda apagada tiene exactamente tres vecinos encendidos, su
+      // siguiente estado es encendido.
+      if (!getCelda(matrizStruct, fil, col) && v == 3) {
+        setCelda(&nuevaMatriz, fil, col, 1);
+      }
+    }
+  }
+  memcpy(matrizStruct, &nuevaMatriz, sizeof(nuevaMatriz));
+  // matrizDestructor(&nuevaMatriz);*/
+}
 
 int main() {
   char archivo[100] = "/home/darius/workspace2/TPOrga/src/glider";
   matriz_t matriz;
-  matrizConstructor(&matriz, 10, 10);
+  matrizConstructor(&matriz, 14, 10);
   cargarMatriz(&matriz, archivo);
   mostrarMatriz(&matriz);
-  int v = vecinos(matriz.matriz, 4, 4, matriz.ancho, matriz.largo);
-  cargarEstado(&matriz, 1);
-  printf("Vecinos : %d", v);
+  int v = vecinos(matriz.matriz, 4, 4, matriz.largo, matriz.ancho);
+  printf("Vecinos en 4,4 : %d\n", v);
+  v = vecinos(matriz.matriz, 3, 5, matriz.largo, matriz.ancho);
+  printf("Vecinos 3,5: %d\n", v);
+  v = vecinos(matriz.matriz, 6, 4, matriz.largo, matriz.ancho);
+  printf("Vecinos 6,4: %d\n", v);
+  printf("=====================\n");
+
+  actualizarMatriz(&matriz);
+  // printf("=====================\n");
+  mostrarMatriz(&matriz);
   matrizDestructor(&matriz);
   return 0;
 }
-/*
-int main(int argc, char *argv[]) {
-
-  matriz_t *matriz;
-
-  int iteraciones = atoi(argv[1]);  // convert char* to int
-  int largo = atoi(argv[3]);
-  int ancho = atoi(argv[2]);
-  // crear matriz
-  matrizConstructor(matriz, ancho, largo);
-
-  // se carga con los datos del archivo
-  cargarMatriz(matriz, argv[4]);
-  for (int i = 0; i < iteraciones; i++) {
-    // vecinos
-  }
-
-  matrizDestructor(matriz);
-  return 0;
-}*/
