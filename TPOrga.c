@@ -133,7 +133,7 @@ void mostrarMatriz(matriz_t *matrizStruct) {
 }
 
 int main() {
-  char archivo[100] = "/home/darius/workspace2/TPOrga/src/glider";
+  char archivo[100] = "glider";
   matriz_t matriz;
   matrizConstructor(&matriz, 10, 10);
   cargarMatriz(&matriz, archivo);
