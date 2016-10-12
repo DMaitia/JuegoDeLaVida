@@ -4,6 +4,8 @@
  Name        : TPOrga.c
  Autores     : Darius Maitia, Cristian González
  Description : Programa que simula el "juego de la vida"
+ EJECUCIÓN   : gcc -std=c99 TPOrga.c -o tp
+
  ============================================================================
  */
 
@@ -33,6 +35,7 @@ void matrizDestructor(matriz_t *matrizStruct) {
 int posicion(int fila, int columna, int ancho) {
   return (columna + fila * ancho);
 }
+
 void setCelda(matriz_t *matrizStruct, int fila, int columna, bool valor) {
   matrizStruct->matriz[posicion(fila, columna, matrizStruct->ancho)] = valor;
 }
@@ -70,7 +73,7 @@ int cargarEstado(matriz_t *matriz, int estado) {
     }
     fputs("\n", fp);
   }
-  printf("Listo");
+  printf("Listo\n");
   return 0;
 }
 
@@ -104,21 +107,31 @@ unsigned int vecinos(unsigned char *a, unsigned int columna, unsigned int fila,
   int columnaFinal, filaFinal, columnaInicial, filaInicial, vecinos;
 
   filaInicial = fila - 1;
-  if (filaInicial < 0) filaInicial = 0;
+  if (filaInicial < 0) {
+    filaInicial = 0;
+  }
 
   columnaInicial = columna - 1;
-  if (columnaInicial < 0) columnaInicial = 0;
+  if (columnaInicial < 0) {
+    columnaInicial = 0;
+  }
 
   filaFinal = fila + 1;
-  if (filaFinal > cantFilas - 1) filaFinal = cantFilas - 1;
+  if (filaFinal > cantFilas - 1) {
+    filaFinal = cantFilas - 1;
+  }
 
   columnaFinal = columna + 1;
-  if (columnaFinal > cantCols - 1) columnaFinal = cantCols - 1;
+  if (columnaFinal > cantCols - 1) {
+    columnaFinal = cantCols - 1;
+  }
 
   vecinos = 0;
   for (int y = filaInicial; y <= filaFinal; y++) {
     for (int x = columnaInicial; x <= columnaFinal; x++) {
-      if (!(x == fila && y == columna)) vecinos += a[x + cantCols * y];
+      if (!(x == columna && y == fila)) {
+        vecinos += a[y * cantCols + x];
+      }
     }
   }
   return vecinos;
@@ -132,6 +145,7 @@ void mostrarMatriz(matriz_t *matrizStruct) {
     printf("\n");
   }
 }
+
 // matriz[columna + fila * matrizStruct->ancho] = valor;
 void actualizarMatriz(matriz_t *matrizStruct) {
   int v;
@@ -164,23 +178,23 @@ void actualizarMatriz(matriz_t *matrizStruct) {
   // matrizDestructor(&nuevaMatriz);*/
 }
 
-int main() {
-  char archivo[100] = "glider";
-  matriz_t matriz;
-  matrizConstructor(&matriz, 14, 10);
-  cargarMatriz(&matriz, archivo);
-  mostrarMatriz(&matriz);
-  int v = vecinos(matriz.matriz, 4, 4, matriz.largo, matriz.ancho);
-  printf("Vecinos en 4,4 : %d\n", v);
-  v = vecinos(matriz.matriz, 3, 5, matriz.largo, matriz.ancho);
-  printf("Vecinos 3,5: %d\n", v);
-  v = vecinos(matriz.matriz, 6, 4, matriz.largo, matriz.ancho);
-  printf("Vecinos 6,4: %d\n", v);
-  printf("=====================\n");
+// conway 10 20 20 glider -o estado
+int main(int argc, char *argv[]) {
 
-  actualizarMatriz(&matriz);
-  // printf("=====================\n");
-  mostrarMatriz(&matriz);
+  int iteraciones = atoi(argv[2]);
+  int ancho = atoi(argv[3]);
+  int largo = atoi(argv[4]);
+  char archivo[100];
+  strcpy(archivo, argv[5]);
+
+  matriz_t matriz;
+  matrizConstructor(&matriz, ancho, largo);
+  cargarMatriz(&matriz, archivo);
+
+  for (int i = 1; i <= iteraciones; i++) {
+    cargarEstado(&matriz, i);
+    actualizarMatriz(&matriz);
+  }
   matrizDestructor(&matriz);
   return 0;
 }
