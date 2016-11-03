@@ -112,7 +112,7 @@ IF5:	multu  s6, t7			#y*cantCols
 	mflo   t1			#del producto almacenar los 32 bits menos significativos en  t1
 	add  t1, t1, s7			#y*cantCols + x
 	sll  t1, t1,2			#t1*4 (las posiciones se dan de a 4 bytes)
-	ld   t2, t1( a0)		#a[y * cantCols + x] ->  t2
+	ld   t2, t1(a0)		#a[y * cantCols + x] ->  t2
 	add  s5, s5, t2			#vecinos +=  t2
 	j FOR2
 		
