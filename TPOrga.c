@@ -14,6 +14,9 @@
 #include <stdbool.h>
 #include <string.h>  //memset()
 
+extern unsigned int vecinos(unsigned char *a, unsigned int columna, unsigned int fila,
+                     unsigned int cantFilas, unsigned int cantCols);
+
 typedef struct matriz {
   int ancho;
   int largo;
@@ -101,7 +104,7 @@ void cargarMatriz(matriz_t *matrizStruct, char *archivo) {
  * M : cantidad de filas
  * N : cantidad de columnas
  */
-unsigned int vecinos(unsigned char *a, unsigned int columna, unsigned int fila,
+/*unsigned int vecinos(unsigned char *a, unsigned int columna, unsigned int fila,
                      unsigned int cantFilas, unsigned int cantCols) {
 
   int columnaFinal, filaFinal, columnaInicial, filaInicial, vecinos;
@@ -135,7 +138,7 @@ unsigned int vecinos(unsigned char *a, unsigned int columna, unsigned int fila,
     }
   }
   return vecinos;
-}
+}*/
 
 void mostrarMatriz(matriz_t *matrizStruct) {
   for (int i = 0; i < matrizStruct->largo; i++) {
