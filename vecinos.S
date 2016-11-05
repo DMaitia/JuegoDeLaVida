@@ -39,7 +39,7 @@
 
 	################=PARAMETROS=########################
 	#unsigned char *a      ---  a0
-	dicina
+	
 #unsigned int columna  ---  a1
 	#unsigned int fila     ---  a2
 	#unsigned int cantFilas---  a3
@@ -97,29 +97,30 @@ LOOP:   addi  s6, s4,-1		# s6 = filaInicial - 1 (porque luego incremento cuando 
                             	#bge	$t0,$t1,target	#  branch to target if  $t0 >= $t1
                             	#bgt	$t0,$t1,target	#  branch to target if  $t0 > $t1
 				#FOR1:	bge  s6, s2,FIN		#si y > filaFinal ir a FIN
-FOR1:	bgt  s6, s2,RETURN	#si y > filaFinal ir a FIN
-	addu  s6, s6,1		#y++
-	addu  s7, s3,-1		# s7 = columnaInicial - 1 (mismo motivo que antes)
+FOR1:	addu  s6, s6,1		#y++  >>> y = 0 , 1
+	bgt  s6, s2,RETURN	#si y > filaFinal ir a FIN
+	
+	addu  s7, s3,-1		# s7 = columnaInicial - 1 (mismo motivo que antes) >>> x = -1
 	j FOR2			#No se si es necesario
 
-IF5:	multu  s6, t7			#y*cantCols
+IF5:	multu  s6, t7			#y*cantCols >>> $lo = 0 ,
 	mflo   t1			#del producto almacenar los 32 bits menos significativos en  t1
-	add  t1, t1, s7			#y*cantCols + x
+	add  t1, t1, s7			#y*cantCols + x >>> $t1 = 1 , 2
 	sll  t1, t1,2			#t1*4 (las posiciones se dan de a 4 bytes)
 	addu t3,t1,a0			## sumo el desplazamiento mas la direccion que hay en a0
 	lw   t2,(t3)			#a[y * cantCols + x] ->  t2 (t3) direccion de memoria que hay en t3
 	add  s5, s5, t2			#vecinos +=  t2
 	j FOR2
 
-FOR2:	bge  s7, s1,FOR1		#si x > columnaFinal ir a FOR1
-	addi  s7, s7,1			#x++
+FOR2:	addi  s7, s7,1			#x++ >>> x = 0 , 1 , 2
+	bgt  s7, s1,FOR1		#si x > columnaFinal ir a FOR1
 
 					#en esta parte cabe aclarar que por DeMorgan
 					#!(x == columna && y == fila) equivale a (x!=columna || y!=fila)
 	bne  s7, a1,IF5
 	beq  s6, a2,FOR2		#No se cumple ninguna de las 2 condiciones
+	j IF5;
 
-
-RETURN:	addu ra,s5,zero  #coloco en ra lo que hay en s5
+RETURN:	addu v0,s5,zero  #coloco en ra lo que hay en s5
 	j ra             #retorno el valor
 	.end vecinos
