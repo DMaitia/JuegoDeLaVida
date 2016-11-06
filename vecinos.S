@@ -13,7 +13,7 @@
 	#	|    Argument 6    	|
 	#	+-----------------------+
 	#	|    Argument 5		|   Se empieza por el argumento 5 puesto que los 4 primeros estan en los registros a0-a3
-	#$fp -->+-----------------------+
+	#$fp -->	+-----------------------+
 	#	|    Saved Registers	|
 	#	+-----------------------+
 	#	|        ...		|
@@ -39,17 +39,18 @@
 
 	################=PARAMETROS=########################
 	#unsigned char *a      ---  a0
-	#unsigned int columna  ---  a1
+
+        #unsigned int columna  ---  a1
 	#unsigned int fila     ---  a2
 	#unsigned int cantFilas---  a3
-	#unsigned int cantCols ---  36($fp) -> t7
+	#unsigned int cantCols --- 48( $fp) ->  t7
 	####################################################
 
 vecinos:subu  sp, sp,32
 
 	sw	 $fp,28(sp); #Guardo la direccion de memoria de fp en memoria
-	sw	 gp,24(sp);  
-	move	 $fp,sp;     #uso fp,
+	sw	 gp,24(sp);  #
+	move	 $fp,sp;    #uso fp,
 
 	######INICIALIZAR VARIABLES######
 	subu  s4, a2,1		#filaInicial = fila - 1;
@@ -57,7 +58,7 @@ vecinos:subu  sp, sp,32
 	addu  s2, a2,1		#filaFinal = fila + 1;
 	addu  s1, a1,1		#columnaFinal = columna + 1;
 	add  s5, zero, zero	#vecinos = 0;
-	lw  t7,36($fp)		#cantCols ->  t7
+	lw  t7,48($fp)		#cantCols ->  t7
 
 	######ACOTAR POSICIONES #########
 # Referencias : https://www.cs.umd.edu/class/sum2003/cmsc311/Notes/Mips/cond.html
@@ -96,31 +97,33 @@ LOOP:   addi  s6, s4,-1		# s6 = filaInicial - 1 (porque luego incremento cuando 
                             	#bge	$t0,$t1,target	#  branch to target if  $t0 >= $t1
                             	#bgt	$t0,$t1,target	#  branch to target if  $t0 > $t1
 				#FOR1:	bge  s6, s2,FIN		#si y > filaFinal ir a FIN
-FOR1:	addu  s6, s6,1		#y++
+FOR1:	addu s6, s6,1		#y++
 	bgt  s6, s2,RETURN	#si y > filaFinal ir a FIN
-	
-	addu  s7, s3,-1		# s7 = columnaInicial - 1 (mismo motivo que antes) >>> x = -1
+
+	addu  s7, s3,-1		# s7 = columnaInicial - 1 (mismo motivo que antes)
 	j FOR2			#No se si es necesario
 
-IF5:	multu  s6, t7			#y*cantCols 
+IF5:	multu  s6, t7			#y*cantCols
 	mflo   t1			#del producto almacenar los 32 bits menos significativos en  t1
-	add  t1, t1, s7			#y*cantCols + x 
+	add  t1, t1, s7			#y*cantCols + x
+
 	addu t3,t1,a0			## sumo el desplazamiento mas la direccion que hay en a0
 	lbu   t2,(t3)			#a[y * cantCols + x] ->  t2 (t3) direccion de memoria que hay en t3
 	add  s5, s5, t2			#vecinos +=  t2
 	j FOR2
 
-FOR2:	addi  s7, s7,1			#x++ 
+FOR2:	addi s7, s7,1			#x++
 	bgt  s7, s1,FOR1		#si x > columnaFinal ir a FOR1
+
 
 					#en esta parte cabe aclarar que por DeMorgan
 					#!(x == columna && y == fila) equivale a (x!=columna || y!=fila)
 	bne  s7, a1,IF5
 	beq  s6, a2,FOR2		#No se cumple ninguna de las 2 condiciones
-	j IF5;
+	j IF5
 
 RETURN:	addu v0,s5,zero  #coloco en ra lo que hay en s5
-	lw $fp,28(sp);   #restauro el fp
-	addi sp,sp,32	 #restauro el sp
+	lw $fp,28(sp)
+	addi sp,sp,32	 #restauro el valor del stack pointer
 	j ra             #retorno el valor
 	.end vecinos
