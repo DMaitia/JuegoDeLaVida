@@ -11,6 +11,8 @@
 	#columnaInicial   ---  s3
 	#filaInicial      ---  s4
 	#vecinos 	  ---  s5
+	#y =  s6
+	#x =  s7
 	####################################################
 
 	################=PARAMETROS=########################
@@ -65,41 +67,31 @@ vecinos:subu  sp, sp,32
 	add  s1, zero, t0		#  columnaFinal = cantCols - 1;
 					#}
 
-				########CICLOS ANIDADOS#############
-				#y =  s6
-				#x =  s7
+ LOOP: addi  s6, s4,-1			#s6 = filaInicial - 1 (porque luego incremento
+ 					#cuando comienza el ciclo y arranca en filaInicial)
+ FOR1:	addu s6, s6,1			#y++
+	bgt  s6, s2,RETURN		#si y > filaFinal ir a FIN
+	addu  s7, s3,-1			# s7 = columnaInicial - 1 (mismo motivo que antes)
+	j FOR2
 
-LOOP:   addi  s6, s4,-1		# s6 = filaInicial - 1 (porque luego incremento cuando comienza el ciclo y arranca en filaInicial)
-                            	#bge	$t0,$t1,target	#  branch to target if  $t0 >= $t1
-                            	#bgt	$t0,$t1,target	#  branch to target if  $t0 > $t1
-				#FOR1:	bge  s6, s2,FIN		#si y > filaFinal ir a FIN
-FOR1:	addu s6, s6,1		#y++
-	bgt  s6, s2,RETURN	#si y > filaFinal ir a FIN
-
-	addu  s7, s3,-1		# s7 = columnaInicial - 1 (mismo motivo que antes)
-	j FOR2			#No se si es necesario
-
-IF5:	multu  s6, t7			#y*cantCols
-	mflo   t1			#del producto almacenar los 32 bits menos significativos en  t1
+ IF5:	multu  s6, t7			#y*cantCols
+	mflo   t1			#almacenar los 32 bits menos significativos
 	add  t1, t1, s7			#y*cantCols + x
-
-	addu t3,t1,a0			## sumo el desplazamiento mas la direccion que hay en a0
-	lbu   t2,(t3)			#a[y * cantCols + x] ->  t2 (t3) direccion de memoria que hay en t3
+	addu t3,t1,a0			#sumo el desplazamiento mas la direccion que hay en a0
+	lbu   t2,(t3)			#a[y * cantCols + x]
 	add  s5, s5, t2			#vecinos +=  t2
 	j FOR2
 
 FOR2:	addi s7, s7,1			#x++
 	bgt  s7, s1,FOR1		#si x > columnaFinal ir a FOR1
-
-
 					#en esta parte cabe aclarar que por DeMorgan
 					#!(x == columna && y == fila) equivale a (x!=columna || y!=fila)
 	bne  s7, a1,IF5
 	beq  s6, a2,FOR2		#No se cumple ninguna de las 2 condiciones
 	j IF5
 
-RETURN:	addu v0,s5,zero  #coloco en ra lo que hay en s5
+RETURN:	addu v0,s5,zero			#coloco en ra lo que hay en s5
 	lw $fp,28(sp)
-	addi sp,sp,32	 #restauro el valor del stack pointer
-	j ra             #retorno el valor
+	addi sp,sp,32			#restauro el valor del stack pointer
+	j ra				#retorno el valor
 	.end vecinos
