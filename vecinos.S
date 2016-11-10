@@ -5,30 +5,6 @@
 	.ent vecinos
 	.globl vecinos
 
-
-	#Stack Frame (http://www.cygwin.com/ml/binutils/2003-06/msg00436.html)
-	#-----------
-	#
-	#	+-----------------------+
-	#	|    Argument 6    	|
-	#	+-----------------------+
-	#	|    Argument 5		|   Se empieza por el argumento 5 puesto que los 4 primeros estan en los registros a0-a3
-	#$fp -->	+-----------------------+
-	#	|    Saved Registers	|
-	#	+-----------------------+
-	#	|        ...		|
-	#	+-----------------------+
-	#	|    Local Variables	|
-	#	+-----------------------+
-	#	|        ...		|
-	#	+-----------------------+
-	#	|   Parameter Word 2	|
-	#	+-----------------------+
-	#SP -->	|   Parameter Word 1	|
-	#	+-----------------------+
-	#
-	# LEER KAUFMANN Página 620 "Procedure Calls" Ahi esta explicado
-
 	###############=VARIABLES INTERNAS=#################
 	#int columnaFinal ---  s1
 	#int filaFinal    ---  s2
