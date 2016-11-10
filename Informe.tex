@@ -5,14 +5,29 @@
 \usepackage{amsfonts}
 \usepackage{amssymb}
 \usepackage{graphicx}
+\usepackage{listings}
+\usepackage{vmargin}
+\setpapersize{A4}
+\setmargins
+{2.5cm}       % margen izquierdo
+{1.5cm} % margen superior
+{16.5cm}% anchura del texto
+{23.42cm} % altura del texto
+{10pt} % altura de los encabezados
+{1cm} % espacio entre el texto y los encabezados
+{0pt} % altura del pie de página
+{2cm}% espacio entre el texto y el pie de página
 
-%https://prezi.com/rh0k0ljfqzj3/copy-of-copy-of-modelo-en-espiral/
 
 \begin{document}
-	
+\begin{figure}
+\centering
+\includegraphics[width=1.0\linewidth, height=0.23\textheight]{FIUBA_ALTA}
+\label{fig:FIUBA_ALTA}
+\end{figure}
+
 	\begin{titlepage}
 		\centering
-		{\scshape\LARGE Universidad de Buenos Aires \par}
 		\vspace{1cm}
 		{\scshape\Large Organización de Computadoras (66.20)\par}
 		\vspace{1.5cm}
@@ -31,16 +46,406 @@
 	%Índice.
 	\tableofcontents
 	\newpage
-\section{Seccion 1}
-asasasa
-\subsection{Sub Seccion 1}
-asasa
-\subsection{Sub Seccion 2}
-asas
-\section{Seccion 2}	
-asasass
-\section{Seccion 3}
-a
-sasa
+\section{Introducción}
+El \textquotedblleft Juego de la Vida\textquotedblright  de Conway es un autómata celular, diseñado por el
+matemático británico John Conway en 1970. Se trata básicamente de una grilla en principio infinita, en cada una de cuyas celdas puede haber un organismo vivo, en cada iteración del juego, se va redefiniendo si un organismo (una celda de la grilla) cambia de estado (viva o muerta). \\
+Este cambio de estado depende de sus vecinos (las posiciones alrededor de este) que define con ciertas reglas. Para eso se nos pide implementar una función \texttt{vecinos()} que observa los vecinos y nos devuelve la cantidad de vecinos \textquotedblleft vivos\textquotedblright.\\
+Esta funcionalidad será implementada en Assembler MIPS 32, pero también nuestro programa contara con su versión implementada totalmente en C.    
+\subsection{Instrucciones}
+Acá se describe los pasos para ejecutar el juego. Se cuenta con los archivos:
+\begin{itemize}
+	\item JuegoDeLaVida.c
+	\item vecinos.S
+\end{itemize}
+Los primeros casos consiste en compilar ambos archivos:
+\begin{itemize}
+	\item \texttt{gcc -ggdb -Wall -c vecinos.S}
+	\item \texttt{gcc -ggdb -Wall -c JuegoDeLaVida.c}
+\end{itemize}
+Se procede a linkear y crear un ejecutable.
+\begin{itemize}
+	\item \texttt{gcc vecinos.o JuegoDeLaVida.o -o conway}
+\end{itemize}
+
+Para la ejecución del programa se debe realizar la siguiente linea:\\
+
+\texttt{conway i M N inputfile [-o outputprefix]}
+\newpage
+\subsection{Código Assembler}
+\lstinputlisting{vecinos.S}
+\begin{lstlisting}
+
+\end{lstlisting}
+
+\section{Documentacion de Corridas}	
+Contenido del archivo \texttt{pento}:\\
+\texttt{cat pento}
+\texttt{\\
+3 5\\
+3 6\\
+4 4\\
+4 5\\
+5 5\\
+}
+\newpage
+
+Contenido del archivo \texttt{sapo}:\\
+\texttt{cat sapo}
+\texttt{\\
+5 3\\
+5 4\\
+5 5\\
+4 4\\
+4 5\\
+4 6\\
+}\\
+
+Contenido del archivo \texttt{glider}:\\
+\texttt{cat glider}
+\texttt{\\
+5 3\\
+5 4\\
+5 5\\
+3 4\\
+4 5\\
+}
+\subsection{Corrida glider}
+Comando ejecutado:\\
+\texttt{./conway 10 20 20 glider -o salida}\\
+Salida stdin:
+\texttt{\\
+	Grabando salida\_1.pbm\\
+	Listo\\
+	Grabando salida\_2.pbm\\
+	Listo\\
+	Grabando salida\_3.pbm\\
+	Listo\\
+	Grabando salida\_4.pbm\\
+	Listo\\
+	Grabando salida\_5.pbm\\
+	Listo\\
+	Grabando salida\_6.pbm\\
+	Listo\\
+	Grabando salida\_7.pbm\\
+	Listo\\
+	Grabando salida\_8.pbm\\
+	Listo\\
+	Grabando salida\_9.pbm\\
+	Listo\\
+	Grabando salida\_10.pbm\\
+	Listo}
+\newpage
+Archivos:\\
+\texttt{cat salida\_1.pbm\\
+	}
+\texttt{P1 20 20\\
+	0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\\ 
+	0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+	0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\\ 
+	0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\\ 
+	0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+	0 0 0 1 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+	0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+	0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+	0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+	0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+	0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+	0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\\
+	0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+	0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+	0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+	0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+	0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+	0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+	0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+	0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+	}
+	
+\texttt{cat salida\_5.pbm\\
+}
+\texttt{P1 20 20\\
+	0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\\
+	0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+	0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+	0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+	0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+	0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+	0 0 0 0 1 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+	0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+	0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+	0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+	0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+	0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+	0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+	0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+	0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+	0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+	0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+	0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+	0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+	0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+	}
+\texttt{cat salida\_10.pbm\\
+}
+\texttt{P1 20 20\\
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\\
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 0 1 0 1 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 0 0 1 1 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+}
+\subsection{Corrida sapo}
+Comando ejecutado:\\
+\texttt{./conway 10 20 20 sapo -o salida\_sapo}\\
+Salida stdin:
+\texttt{\\
+	Grabando salida\_sapo\_1.pbm\\
+	Listo\\
+	Grabando salida\_sapo\_2.pbm\\
+	Listo\\
+	Grabando salida\_sapo\_3.pbm\\
+	Listo\\
+	Grabando salida\_sapo\_4.pbm\\
+	Listo\\
+	Grabando salida\_sapo\_5.pbm\\
+	Listo\\
+	Grabando salida\_sapo\_6.pbm\\
+	Listo\\
+	Grabando salida\_sapo\_7.pbm\\
+	Listo\\
+	Grabando salida\_sapo\_8.pbm\\
+	Listo\\
+	Grabando salida\_sapo\_9.pbm\\
+	Listo\\
+	Grabando salida\_sapo\_10.pbm\\
+	Listo}
+Archivos:\\
+\texttt{cat salida\_1.pbm\\
+}
+\texttt{P1 20 20\\
+P1 20 20
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 1 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+}
+
+\texttt{cat salida\_sapo\_5.pbm\\
+}
+\texttt{P1 20 20\\
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\\ 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 1 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\\
+}
+\texttt{cat salida\_sapo\_10.pbm\\
+}
+\texttt{P1 20 20\\
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 0 1 0 1 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 0 0 1 1 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+}
+
+\subsection{Corrida pento}
+Comando ejecutado:\\
+\texttt{./conway 10 20 20 pento -o salida\_pento}\\
+Salida stdin:
+\texttt{\\
+	Grabando salida\_pento\_1.pbm\\
+	Listo\\
+	Grabando salida\_pento\_2.pbm\\
+	Listo\\
+	Grabando salida\_pento\_3.pbm\\
+	Listo\\
+	Grabando salida\_pento\_4.pbm\\
+	Listo\\
+	Grabando salida\_pento\_5.pbm\\
+	Listo\\
+	Grabando salida\_pento\_6.pbm\\
+	Listo\\
+	Grabando salida\_pento\_7.pbm\\
+	Listo\\
+	Grabando salida\_pento\_8.pbm\\
+	Listo\\
+	Grabando salida\_pento\_9.pbm\\
+	Listo\\
+	Grabando salida\_pento\_10.pbm\\
+	Listo}
+Archivos:\\
+\texttt{cat salida\_1.pbm\\
+}
+\texttt{P1 20 20\\
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 0 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\\
+}
+
+\texttt{cat salida\_pento\_5.pbm\\
+}
+\texttt{P1 20 20\\
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 1 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 1 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 1 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\\
+}\\
+
+\texttt{cat salida\_pento\_10.pbm\\
+}
+\texttt{P1 20 20\\
+0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 1 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 1 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 1 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \\
+}
+
+
+En caso de que no especifique archivo de salida:\\
+\texttt{./conway 10 20 20 pento\\
+Grabando pento\_1.pbm\\
+Listo\\
+Grabando pento\_2.pbm\\
+Listo\\
+Grabando pento\_3.pbm\\
+Listo\\
+Grabando pento\_4.pbm\\
+Listo\\
+Grabando pento\_5.pbm\\
+Listo\\
+Grabando pento\_6.pbm\\
+Listo\\
+Grabando pento\_7.pbm\\
+Listo\\
+Grabando pento\_8.pbm\\
+Listo\\
+Grabando pento\_9.pbm\\
+Listo\\
+Grabando pento\_10.pbm\\
+Listo\\
+}
+\section{Definiciones del Juego}
+\begin{itemize}
+	\item Se realizo el juego de tal forma que si un vecino de la posición i,j está fuera de rango de nuestra grilla, este vecino está muerto.
+\end{itemize}
+\section{Stack}
+\lstinputlisting{stack.txt}
+\begin{lstlisting}
+
+\end{lstlisting}
+\section{Conclusiones}
+En este trábajo practico  se llego a qué Assembly representa un interesante recurso de programación, en el que se hace necesario el conocimiento del funcionamiento interno del procesador así como de el armado del stack entre funciones llamadas y llamadoras. \\
+El cómo una función comparte sus recursos - en este caso el quinto argumento - por medio del stack. También sobre la preservación de una estado correcto cómo la preservación de valores de ciertos registros, como la dirección de memoria de stack pointer.
 	
 \end{document}
