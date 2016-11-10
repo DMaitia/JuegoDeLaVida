@@ -14,8 +14,8 @@
 #include <stdbool.h>
 #include <string.h>  //memset()
 
-extern unsigned int vecinos(unsigned char *a, unsigned int columna, unsigned int fila,
-                     unsigned int cantFilas, unsigned int cantCols);
+/*extern unsigned int vecinos(unsigned char *a, unsigned int columna, unsigned int fila,
+                     unsigned int cantFilas, unsigned int cantCols);*/
 
 typedef struct matriz {
   int ancho;
@@ -57,11 +57,11 @@ bool datosValidos(matriz_t *matrizStruct, int fila, int columna) {
     return true;
 }
 
-int cargarEstado(matriz_t *matriz, int estado) {
+int cargarEstado(matriz_t *matriz, int estado, char* nombre_archivo_output){
   int filas = matriz->largo;
   int columnas = matriz->ancho;
   char nombre_archivo[20];
-  snprintf(nombre_archivo, 20, "estado_%d.pbm", estado);
+  snprintf(nombre_archivo, 20, "%s_%d.pbm", nombre_archivo_output,estado);
   printf("Grabando %s\n", nombre_archivo);
   char dimensiones[10];
 
@@ -104,7 +104,7 @@ void cargarMatriz(matriz_t *matrizStruct, char *archivo) {
  * M : cantidad de filas
  * N : cantidad de columnas
  */
-/*unsigned int vecinos(unsigned char *a, unsigned int columna, unsigned int fila,
+unsigned int vecinos(unsigned char *a, unsigned int columna, unsigned int fila,
                      unsigned int cantFilas, unsigned int cantCols) {
 
   int columnaFinal, filaFinal, columnaInicial, filaInicial, vecinos;
@@ -138,7 +138,7 @@ void cargarMatriz(matriz_t *matrizStruct, char *archivo) {
     }
   }
   return vecinos;
-}*/
+}
 
 void mostrarMatriz(matriz_t *matrizStruct) {
   for (int i = 0; i < matrizStruct->largo; i++) {
@@ -181,21 +181,56 @@ void actualizarMatriz(matriz_t *matrizStruct) {
   // matrizDestructor(&nuevaMatriz);*/
 }
 
+
+void printAyuda(){
+  printf("Uso:\n");
+  printf("  conway -h\n");
+  printf("  conway -V\n");
+  printf("  conway i M N inputfile [-o outputprefix]\n");
+  printf("Opciones:\n");
+  printf("  -h, --help      Imprime este mensaje.\n");
+  printf("  -V, --version   De la versión del programa.\n");
+  printf("  -o              Prefijo de los archivos de salida.\n");
+  printf("Ejemplos:\n");
+  printf("    ./conway 5 5 10 pento -o muestra\n");
+  printf("Representa 5 iteraciones del Juego de la Vida en una matriz de 5x10,\n");
+  printf("con un estado inicial tomado del archivo ‘‘pento’’.\n");
+  printf("Los archivos de salida se llamarán muestra_n.pbm.\n");
+  printf("Si no se da un prefijo para los archivos de salida, el prefijo será el nombre del archivo de entrada.\n");
+}
+
+
+void printVersion(){
+  printf("Juego de la Vida 1.0\n");
+}
+
 // conway 10 20 20 glider -o estado
 int main(int argc, char *argv[]) {
-
-  int iteraciones = atoi(argv[2]);
-  int ancho = atoi(argv[3]);
-  int largo = atoi(argv[4]);
+  char* comando_ayuda = "-h";
+  char* comando_version = "-v";
+  if (strcmp(argv[1],comando_ayuda)==0){
+    printAyuda();
+    return 0;
+  }
+  if (strcmp(argv[1],comando_version)==0){
+    printVersion();
+    return 0;
+  }
+  int iteraciones = atoi(argv[1]);
+  int ancho = atoi(argv[2]);
+  int largo = atoi(argv[3]);
   char archivo[100];
-  strcpy(archivo, argv[5]);
-
+  strcpy(archivo, argv[4]);
   matriz_t matriz;
   matrizConstructor(&matriz, ancho, largo);
   cargarMatriz(&matriz, archivo);
 
   for (int i = 1; i <= iteraciones; i++) {
-    cargarEstado(&matriz, i);
+    if (argc == 5){
+      cargarEstado(&matriz, i,argv[4]);
+    }else{
+      cargarEstado(&matriz, i,argv[6]);
+    }
     actualizarMatriz(&matriz);
   }
   matrizDestructor(&matriz);
