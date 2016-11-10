@@ -445,7 +445,7 @@ Listo\\
 
 \end{lstlisting}
 \section{Conclusiones}
-En este trábajo practico  se llego a qué Assembly representa un interesante recurso de programación, en el que se hace necesario el conocimiento del funcionamiento interno del procesador así como de el armado del stack entre funciones llamadas y llamadoras. \\
-El cómo una función comparte sus recursos - en este caso el quinto argumento - por medio del stack. También sobre la preservación de una estado correcto cómo la preservación de valores de ciertos registros, como la dirección de memoria de stack pointer.
+Assembly representa un interesante recurso de programación, en el que se hace necesario el conocimiento del funcionamiento interno del procesador así como de el armado del stack entre funciones llamadas y llamadoras. \\
+Concretamente en este trabajo práctico, dicho punto fue un paso obligado debido a un quinto argumento de la función vecinos que exedía los registros de argumentos a0-a3. Para ello la función llamadora actualizarMatriz reservó en stack espacio adicional para guardar la variable supelementaria de manera tal que quede acomodada para la funcion llamada que a su vez reserva memoria adicional en el stack para guardar las variables que sean necesarias (en este caso únicamente para guardar el $fp y $gp puesto que era una función hoja). 
 	
 \end{document}
